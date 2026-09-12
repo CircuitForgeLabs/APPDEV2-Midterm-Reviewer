@@ -1,0 +1,1930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mock Exam Reviewer — SDLC &amp; Agile</title>
+<style>
+  :root {
+    --bg: #eef2f9;
+    --card: #ffffff;
+    --ink: #1e293b;
+    --muted: #64748b;
+    --line: #e2e8f0;
+    --accent: #4f46e5;
+    --accent-soft: #eef2ff;
+    --correct: #16a34a;
+    --correct-soft: #ecfdf5;
+    --wrong: #dc2626;
+    --wrong-soft: #fef2f2;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #eef2f9 0%, #e0e7ff 100%);
+    font-family: "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    padding: 24px 16px 60px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  .app { width: 100%; max-width: 760px; }
+
+  /* ================= HEADER + LOGOS ================= */
+  header.top { margin-bottom: 20px; }
+
+  .header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 14px 18px;
+    box-shadow: 0 8px 24px rgba(30, 41, 59, 0.10);
+  }
+
+  .logo-container {
+    flex: 0 0 auto;
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    background: #fff;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    border: 3px solid #e0e7ff;
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.16);
+    transition: transform 0.18s, box-shadow 0.18s;
+  }
+
+  .logo-container:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.26);
+  }
+
+  .logo-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  .header-titles {
+    flex: 1 1 auto;
+    min-width: 0;
+    text-align: center;
+  }
+
+  .header-titles h1 {
+    margin: 0 0 5px;
+    font-size: 1.5rem;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  .header-titles p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.88rem;
+    line-height: 1.35;
+  }
+
+  .header-divider {
+    height: 3px;
+    width: 110px;
+    margin: 10px auto 0;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #6366f1, #a78bfa);
+    opacity: 0.85;
+  }
+
+  .student-banner {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin: 14px auto 0;
+    width: fit-content;
+    background: #fff;
+    padding: 9px 20px;
+    border-radius: 999px;
+    box-shadow: 0 4px 16px rgba(30, 41, 59, 0.09);
+    font-size: 0.87rem;
+    color: #475569;
+  }
+
+  .student-banner b { color: var(--accent); }
+  .student-banner .dot { color: #cbd5e1; }
+
+  /* ================= CARD ================= */
+  .card {
+    background: var(--card);
+    border-radius: 18px;
+    box-shadow: 0 12px 34px rgba(30, 41, 59, 0.12);
+    padding: 26px 26px 22px;
+  }
+
+  .meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+
+  .tag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 5px 11px;
+    border-radius: 999px;
+  }
+
+  .counter { font-size: 0.85rem; font-weight: 600; color: var(--muted); }
+
+  .score-chip {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #0f766e;
+    background: #ccfbf1;
+    padding: 5px 11px;
+    border-radius: 999px;
+  }
+
+  .progress {
+    height: 8px;
+    width: 100%;
+    background: var(--line);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 22px;
+  }
+
+  .progress > div {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+    border-radius: 999px;
+    transition: width 0.35s ease;
+  }
+
+  .question {
+    font-size: 1.16rem;
+    line-height: 1.5;
+    font-weight: 600;
+    margin: 0 0 18px;
+  }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    width: 100%;
+    text-align: left;
+    padding: 13px 15px;
+    font-size: 0.97rem;
+    line-height: 1.45;
+    font-family: inherit;
+    color: var(--ink);
+    background: #fbfcfe;
+    border: 2px solid var(--line);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, transform 0.1s;
+  }
+
+  .option:hover:not(:disabled) { border-color: #a5b4fc; background: var(--accent-soft); }
+  .option:active:not(:disabled) { transform: scale(0.995); }
+  .option:disabled { cursor: default; }
+
+  .letter {
+    flex: 0 0 26px;
+    height: 26px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: #e2e8f0;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: #475569;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .option.selected { border-color: var(--accent); background: var(--accent-soft); }
+  .option.selected .letter { background: var(--accent); color: #fff; }
+
+  .option.correct { border-color: var(--correct); background: var(--correct-soft); }
+  .option.correct .letter { background: var(--correct); color: #fff; }
+
+  .option.wrong { border-color: var(--wrong); background: var(--wrong-soft); }
+  .option.wrong .letter { background: var(--wrong); color: #fff; }
+
+  .feedback {
+    margin-top: 18px;
+    border-radius: 12px;
+    padding: 15px 16px;
+    font-size: 0.94rem;
+    line-height: 1.55;
+    display: none;
+    animation: fade 0.25s ease;
+  }
+
+  .feedback.show { display: block; }
+  .feedback.good { background: var(--correct-soft); border-left: 5px solid var(--correct); }
+  .feedback.bad { background: var(--wrong-soft); border-left: 5px solid var(--wrong); }
+
+  .feedback .verdict {
+    font-weight: 800;
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.98rem;
+  }
+
+  .feedback.good .verdict { color: var(--correct); }
+  .feedback.bad .verdict { color: var(--wrong); }
+  .feedback .explain { color: #334155; }
+  .feedback .explain b { color: var(--ink); }
+
+  @keyframes fade {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  button.btn {
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 12px 24px;
+    border-radius: 11px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s, opacity 0.15s;
+  }
+
+  button.btn:active { transform: scale(0.98); }
+
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #4338ca; }
+  .btn-primary:disabled { background: #c7d2fe; cursor: not-allowed; }
+
+  .btn-next { background: #0f172a; color: #fff; }
+  .btn-next:hover { background: #1e293b; }
+
+  .btn-ghost { background: transparent; color: var(--accent); border-color: #c7d2fe; }
+  .btn-ghost:hover { background: var(--accent-soft); }
+
+  .hint {
+    margin-top: 12px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  .hidden { display: none !important; }
+
+  /* ================= RESULTS ================= */
+  .results { text-align: center; padding: 34px 26px; }
+
+  .results h2 { margin: 0 0 6px; font-size: 1.45rem; }
+
+  .results .sub { color: var(--muted); font-size: 0.92rem; margin-bottom: 22px; }
+
+  .result-name {
+    display: inline-block;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 800;
+    padding: 7px 18px;
+    border-radius: 999px;
+    margin-bottom: 18px;
+    font-size: 0.95rem;
+  }
+
+  .big-score {
+    font-size: 3.4rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--accent);
+  }
+
+  .big-score small { font-size: 1.2rem; color: var(--muted); font-weight: 600; }
+
+  .percent {
+    display: inline-block;
+    margin-top: 10px;
+    font-weight: 700;
+    padding: 6px 16px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 0.9rem;
+  }
+
+  .remark {
+    margin: 18px auto 0;
+    max-width: 460px;
+    color: #334155;
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+
+  .send-panel {
+    margin: 26px auto 0;
+    max-width: 520px;
+    background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 100%);
+    border: 2px dashed #c7d2fe;
+    border-radius: 16px;
+    padding: 20px 20px 18px;
+    text-align: center;
+  }
+
+  .send-panel .icon { font-size: 1.8rem; line-height: 1; }
+
+  .send-panel h4 {
+    margin: 8px 0 6px;
+    font-size: 1rem;
+    color: #3730a3;
+  }
+
+  .send-panel p {
+    margin: 0 0 14px;
+    font-size: 0.87rem;
+    line-height: 1.55;
+    color: #475569;
+  }
+
+  .send-panel .btn-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .review-list {
+    margin-top: 26px;
+    text-align: left;
+    border-top: 1px dashed var(--line);
+    padding-top: 18px;
+  }
+
+  .review-list h3 {
+    font-size: 0.95rem;
+    margin: 0 0 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .review-item {
+    background: #f8fafc;
+    border-left: 4px solid var(--wrong);
+    border-radius: 8px;
+    padding: 11px 13px;
+    margin-bottom: 9px;
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+
+  .review-item .q { font-weight: 700; margin-bottom: 4px; }
+  .review-item .a { color: var(--muted); }
+  .review-item .a b { color: var(--correct); }
+
+  .all-good { margin-top: 22px; font-weight: 700; color: var(--correct); }
+
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 26px;
+    transform: translateX(-50%) translateY(20px);
+    background: #0f172a;
+    color: #fff;
+    padding: 12px 22px;
+    border-radius: 12px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s, transform 0.25s;
+    z-index: 200;
+  }
+
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ================= WELCOME MODAL ================= */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    z-index: 150;
+    animation: fade 0.25s ease;
+  }
+
+  .modal-overlay.hidden { display: none !important; }
+
+  .modal {
+    background: #fff;
+    border-radius: 22px;
+    width: 100%;
+    max-width: 540px;
+    max-height: 92vh;
+    overflow-y: auto;
+    padding: 32px 30px 28px;
+    box-shadow: 0 30px 80px rgba(15, 23, 42, 0.4);
+    animation: pop 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.15);
+  }
+
+  @keyframes pop {
+    from { opacity: 0; transform: scale(0.94) translateY(14px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  /* modal mini logos */
+  .modal-logos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 14px;
+  }
+
+  .modal-logos .logo-container {
+    width: 62px;
+    height: 62px;
+    border-width: 2px;
+    box-shadow: 0 3px 10px rgba(79, 70, 229, 0.16);
+  }
+
+  .modal-logos .logo-container:hover { transform: none; }
+
+  .modal .wave {
+    font-size: 2.4rem;
+    line-height: 1;
+    text-align: center;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .modal h2 {
+    margin: 0 0 12px;
+    text-align: center;
+    font-size: 1.42rem;
+    letter-spacing: -0.02em;
+  }
+
+  .modal .lead {
+    margin: 0 0 16px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #334155;
+    text-align: center;
+  }
+
+  .modal .info-box {
+    background: linear-gradient(135deg, #eef2ff, #f5f3ff);
+    border-radius: 14px;
+    padding: 15px 17px;
+    margin-bottom: 20px;
+  }
+
+  .modal .info-box ul {
+    margin: 0;
+    padding-left: 20px;
+    font-size: 0.88rem;
+    line-height: 1.65;
+    color: #3730a3;
+  }
+
+  .modal .info-box ul li { margin-bottom: 4px; }
+  .modal .info-box ul li:last-child { margin-bottom: 0; }
+
+  .modal .instructor {
+    text-align: center;
+    font-size: 0.92rem;
+    color: #475569;
+    margin: 0 0 20px;
+  }
+
+  .modal .instructor b { color: var(--accent); }
+
+  .field-label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 7px;
+  }
+
+  .modal input[type="text"] {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 2px solid var(--line);
+    font-size: 1rem;
+    font-family: inherit;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  .modal input[type="text"]:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
+
+  .modal input[type="text"].error {
+    border-color: var(--wrong);
+    box-shadow: 0 0 0 4px var(--wrong-soft);
+  }
+
+  .name-error {
+    color: var(--wrong);
+    font-size: 0.82rem;
+    font-weight: 700;
+    margin: 8px 0 0;
+    display: none;
+  }
+
+  .name-error.show { display: block; }
+
+  .modal .btn-start {
+    width: 100%;
+    margin-top: 20px;
+    padding: 15px 20px;
+    font-size: 1rem;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: #fff;
+    border: none;
+    border-radius: 13px;
+    font-weight: 800;
+    font-family: inherit;
+    cursor: pointer;
+    transition: filter 0.15s, transform 0.1s;
+  }
+
+  .modal .btn-start:hover { filter: brightness(1.08); }
+  .modal .btn-start:active { transform: scale(0.985); }
+
+  .modal .modal-note {
+    margin: 14px 0 0;
+    text-align: center;
+    font-size: 0.76rem;
+    color: #94a3b8;
+    line-height: 1.5;
+  }
+
+  /* ================= RESPONSIVE ================= */
+  @media (max-width: 640px) {
+    .header-bar { padding: 12px 12px; gap: 10px; border-radius: 16px; }
+    .logo-container { width: 66px; height: 66px; border-width: 2px; }
+    .header-titles h1 { font-size: 1.18rem; }
+    .header-titles p { font-size: 0.78rem; }
+  }
+
+  @media (max-width: 460px) {
+    body { padding: 16px 12px 50px; }
+    .header-bar { padding: 10px; gap: 8px; }
+    .logo-container { width: 54px; height: 54px; }
+    .header-titles h1 { font-size: 1rem; }
+    .header-titles p { font-size: 0.72rem; }
+    .header-divider { width: 80px; }
+    .card { padding: 20px 16px 18px; }
+    .question { font-size: 1.05rem; }
+    .option { font-size: 0.92rem; padding: 11px 12px; }
+    .actions { justify-content: stretch; }
+    .actions .btn { flex: 1; }
+    .modal { padding: 26px 20px 22px; }
+    .modal h2 { font-size: 1.22rem; }
+    .modal-logos .logo-container { width: 54px; height: 54px; }
+    .student-banner { font-size: 0.8rem; gap: 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ================= HEADER WITH 2 LOGO CONTAINERS ================= -->
+  <header class="top">
+    <div class="header-bar">
+
+      <!-- LOGO 1 — School Logo -->
+      <div class="logo-container" id="logoLeftBox" title="School Logo">
+        <img id="logoLeftImg" alt="School Logo" src="school-logo.png" />
+      </div>
+
+      <div class="header-titles">
+        <h1>Mock Exam Reviewer</h1>
+        <p>SDLC, Agile, DevOps &amp; Web Fundamentals · 50 items</p>
+      </div>
+
+      <!-- LOGO 2 — Department Logo -->
+      <div class="logo-container" id="logoRightBox" title="Department Logo">
+        <img id="logoRightImg" alt="Department Logo" src="department-logo.png" />
+      </div>
+
+    </div>
+
+    <div class="header-divider"></div>
+
+    <div class="student-banner hidden" id="studentBanner">
+      <span>👤 <b id="studentNameDisplay">—</b></span>
+      <span class="dot">•</span>
+      <span>Instructor: <b>Sir Lee-Mher</b></span>
+    </div>
+  </header>
+
+  <!-- ============ QUIZ CARD ============ -->
+  <div class="card" id="quizCard">
+    <div class="meta">
+      <span class="tag" id="sectionTag">Test I</span>
+      <span class="score-chip" id="scoreChip">Score: 0</span>
+      <span class="counter" id="counter">Question 1 of 50</span>
+    </div>
+
+    <div class="progress"><div id="progressBar"></div></div>
+
+    <p class="question" id="questionText">Loading…</p>
+
+    <div class="options" id="options"></div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <div class="actions">
+      <button class="btn btn-primary" id="submitBtn">Submit Answer</button>
+      <button class="btn btn-next hidden" id="nextBtn">Next Question →</button>
+    </div>
+
+    <p class="hint">Tip: press <b>1–4</b> or <b>A–D</b> to choose, then <b>Enter</b> to submit / continue.</p>
+  </div>
+
+  <!-- ============ RESULTS CARD ============ -->
+  <div class="card results hidden" id="resultsCard">
+    <h2>Exam Complete!</h2>
+    <p class="sub">Here is your mock exam summary.</p>
+
+    <div class="result-name" id="resultName">Student</div>
+
+    <div class="big-score" id="finalScore">0<small> / 50</small></div>
+    <div class="percent" id="finalPercent">0%</div>
+
+    <p class="remark" id="finalRemark"></p>
+
+    <!-- SEND TO INSTRUCTOR -->
+    <div class="send-panel">
+      <div class="icon">📤</div>
+      <h4>Send your result to Sir Lee-Mher</h4>
+      <p>
+        Download your result card or take a screenshot of this page, then send it to
+        <b>Sir Lee-Mher on Messenger</b>. Keep a copy as your reviewer for the midterm exam.
+      </p>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="downloadBtn">⬇ Download Result (PNG)</button>
+        <button class="btn btn-ghost" id="copyBtn">📋 Copy Text Summary</button>
+      </div>
+    </div>
+
+    <div class="review-list" id="reviewList"></div>
+
+    <div class="actions" style="justify-content:center; margin-top:26px;">
+      <button class="btn btn-next" id="restartBtn">Restart Mock Exam</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============ WELCOME MODAL ============ -->
+<div class="modal-overlay" id="welcomeModal">
+  <div class="modal">
+
+    <div class="modal-logos">
+      <div class="logo-container" id="modalLogoLeftBox" title="School Logo">
+        <img id="modalLogoLeftImg" alt="School Logo" />
+      </div>
+      <div class="logo-container" id="modalLogoRightBox" title="Department Logo">
+        <img id="modalLogoRightImg" alt="Department Logo" />
+      </div>
+    </div>
+
+    <span class="wave">👋</span>
+    <h2>Welcome, Future Passer!</h2>
+
+    <p class="lead">
+      This is a <b>MOCK EXAM</b> for your upcoming <b>Midterm Examination</b>.
+      You may also use this as your <b>reviewer</b>.
+    </p>
+
+    <div class="info-box">
+      <ul>
+        <li><b>50 items</b> — one question at a time</li>
+        <li>You'll get <b>instant feedback</b> and a short explanation after every answer</li>
+        <li>At the end, a <b>summary of your score</b> will be generated</li>
+        <li><b>Download or screenshot</b> your result and send it to your instructor</li>
+      </ul>
+    </div>
+
+    <p class="instructor">Instructor: <b>Sir Lee-Mher</b></p>
+
+    <label class="field-label" for="studentNameInput">Type your full name to begin</label>
+    <input type="text" id="studentNameInput" placeholder="e.g. Juan Dela Cruz" autocomplete="off" />
+    <p class="name-error" id="nameError">⚠ Please type your name before starting the exam.</p>
+
+    <button class="btn-start" id="startExamBtn">Start Mock Exam →</button>
+
+    <p class="modal-note">
+      Your name will be shown on your result card. Make sure it is spelled correctly.
+    </p>
+  </div>
+</div>
+
+<div class="toast" id="toast">Copied!</div>
+
+<script>
+/* =========================================================
+   QUESTION BANK
+   answer = index of the correct option (0 = A, 1 = B, ...)
+   ========================================================= */
+const QUESTIONS = [
+  /* ---------------- TEST I : SDLC & METHODOLOGIES (1–30) ---------------- */
+  {
+    section: "Test I · SDLC & Methodologies",
+    q: "What does SDLC stand for?",
+    options: [
+      "Software Design and Layout Cycle",
+      "Software Development Life Cycle",
+      "System Design and Launch Center",
+      "Software Deployment and Launch Cycle"
+    ],
+    answer: 1,
+    explain: "SDLC means <b>Software Development Life Cycle</b> — the organized process of planning, building, testing, and maintaining software from start to finish."
+  },
+  {
+    section: "Test I · SDLC & Methodologies",
+    q: "Which SDLC phase involves gathering and documenting what the software must do?",
+    options: ["System Design", "Development", "Requirements Analysis", "Testing"],
+    answer: 2,
+    explain: "In <b>Requirements Analysis</b>, the team interviews users and stakeholders to find out exactly what the system must do before any design or code is written."
+  },
+  {
+    section: "Test I · SDLC & Methodologies",
+    q: "Which SDLC phase comes immediately after System Design?",
+    options: ["Testing", "Deployment", "Development/Implementation", "Maintenance"],
+    answer: 2,
+    explain: "Once the design (the blueprint) is approved, the next phase is <b>Development/Implementation</b> — the actual writing of the code."
+  },
+  {
+    section: "Test I · SDLC & Methodologies",
+    q: "In the house-building analogy, what does the \"blueprint\" represent?",
+    options: ["Testing", "Deployment", "System Design", "Maintenance"],
+    answer: 2,
+    explain: "A blueprint guides builders before construction starts. In software, that plan is the <b>System Design</b> phase."
+  },
+  {
+    section: "Test I · SDLC & Methodologies",
+    q: "Which methodology completes SDLC phases strictly in sequence?",
+    options: ["Agile", "Waterfall", "Scrum", "DevOps"],
+    answer: 1,
+    explain: "<b>Waterfall</b> is a linear, sequential model: you finish one phase completely before moving to the next, like water falling down a series of steps."
+  },
+  {
+    section: "Test I · SDLC & Methodologies",
+    q: "In what year was the Agile Manifesto published?",
+    options: ["1995", "2001", "2010", "2015"],
+    answer: 1,
+    explain: "The Agile Manifesto was published in <b>2001</b> by 17 software practitioners who wanted a more flexible alternative to heavyweight processes."
+  },
+  {
+    section: "Test I · SDLC & Methodologies",
+    q: "What is a user story?",
+    options: [
+      "A bug report",
+      "A short feature description from the user's perspective",
+      "A test case",
+      "A deployment log"
+    ],
+    answer: 1,
+    explain: "A <b>user story</b> is a short, plain-language description of a feature written from the user's point of view, so the team understands the value being delivered."
+  },
+  {
+    section: "Test I · SDLC & Methodologies",
+    q: "A Product Backlog is best described as:",
+    options: [
+      "A finished requirements document",
+      "A prioritized, evolving list of desired features",
+      "A test plan",
+      "A deployment schedule"
+    ],
+    answer: 1,
+    explain: "The <b>Product Backlog</b> is a living, prioritized list of everything the product might need — features, fixes, and improvements. It changes as the product and users change."
+  },
+  {
+    section: "Test I · SDLC & Methodologies",
+    q: "Which phase is typically the longest in a software system's real-world lifespan?",
+    options: ["Development", "Testing", "Maintenance", "Requirements Analysis"],
+    answer: 2,
+    explain: "<b>Maintenance</b> lasts the longest because a deployed system keeps needing bug fixes, updates, and new features for years."
+  },
+  {
+    section: "Test I · SDLC & Methodologies",
+    q: "What is the standard template for a user story?",
+    options: [
+      "\"If [condition], then [action]\"",
+      "\"As a [user], I want [feature] so that [benefit]\"",
+      "\"Given [input], when [event], then [output]\"",
+      "\"For [loop], while [condition], do [action]\""
+    ],
+    answer: 1,
+    explain: "The standard format is <b>\"As a [user], I want [feature] so that [benefit]\"</b> — it captures who wants it, what they want, and why it matters."
+  },
+  {
+    section: "Test I · SDLC & Methodologies",
+    q: "Why is documentation important in the SDLC?",
+    options: [
+      "It makes the code run faster",
+      "It helps maintain the system and supports future developers",
+      "It replaces the need for testing",
+      "It eliminates all bugs"
+    ],
+    answer: 1,
+    explain: "Documentation is important because it <b>helps maintain the system and supports future developers</b> who inherit the project. It does not speed up code or replace testing."
+  },
+  {
+    section: "Test I · SDLC & Methodologies",
+    q: "What is the key difference between Waterfall and Agile?",
+    options: [
+      "Waterfall has no phases; Agile has phases",
+      "Waterfall is sequential; Agile is iterative and incremental",
+      "Waterfall uses no documentation; Agile uses extensive documentation",
+      "Waterfall is only for mobile apps; Agile is only for web apps"
+    ],
+    answer: 1,
+    explain: "<b>Waterfall is sequential</b> (one phase after another), while <b>Agile is iterative and incremental</b> — it repeats short cycles and delivers working software in pieces."
+  },
+  {
+    section: "Test I · SDLC & Methodologies",
+    q: "What is the difference between iterative and incremental development?",
+    options: [
+      "Iterative means building piece by piece; incremental means revisiting and refining",
+      "Iterative means revisiting and refining; incremental means building piece by piece",
+      "They are exactly the same thing",
+      "Iterative is for Waterfall; incremental is for Agile"
+    ],
+    answer: 1,
+    explain: "<b>Iterative</b> = revisiting and refining the work in repeated cycles. <b>Incremental</b> = building the product piece by piece, adding a new usable part each time."
+  },
+  {
+    section: "Test I · SDLC & Methodologies",
+    q: "Why is Requirements Analysis considered one of the most important SDLC phases?",
+    options: [
+      "It is the easiest phase to complete",
+      "It ensures the team builds the right product for the client's needs",
+      "It is the only phase that requires documentation",
+      "It replaces the need for testing"
+    ],
+    answer: 1,
+    explain: "It matters most because it <b>ensures the team builds the right product</b>. Get the requirements wrong and every later phase inherits that mistake."
+  },
+  {
+    section: "Test I · SDLC & Methodologies",
+    q: "What could happen to a project that skips the Testing phase?",
+    options: [
+      "The project will be completed faster with no issues",
+      "Bugs and defects may reach users, causing failures and dissatisfaction",
+      "The project will automatically pass all quality checks",
+      "Nothing, testing is optional"
+    ],
+    answer: 1,
+    explain: "Skipping testing means <b>bugs and defects reach real users</b>, which causes failures, frustration, and often expensive fixes later."
+  },
+  {
+    section: "Test I · SDLC & Methodologies",
+    q: "Why is Maintenance often the longest phase in a system's lifecycle?",
+    options: [
+      "Because developers are slow",
+      "Because software needs ongoing bug fixes, updates, and new features after deployment",
+      "Because testing never ends",
+      "Because users stop using the software"
+    ],
+    answer: 1,
+    explain: "Software is never truly \"done.\" After deployment it needs <b>continuous bug fixes, updates, and new features</b>, so maintenance can last for many years."
+  },
+  {
+    section: "Test I · SDLC & Methodologies",
+    q: "Which Agile Manifesto value emphasizes delivering working software over extensive documentation?",
+    options: [
+      "Individuals and interactions over processes and tools",
+      "Working software over comprehensive documentation",
+      "Customer collaboration over contract negotiation",
+      "Responding to change over following a plan"
+    ],
+    answer: 1,
+    explain: "The value is <b>\"Working software over comprehensive documentation.\"</b> Documentation still has value, but a running product proves progress better than paperwork."
+  },
+  {
+    section: "Test I · SDLC & Methodologies",
+    q: "What is the purpose of the Product Backlog?",
+    options: [
+      "To store completed code",
+      "To serve as a prioritized list of all desired features and fixes",
+      "To replace the need for a database",
+      "To track employee attendance"
+    ],
+    answer: 1,
+    explain: "The Product Backlog is the <b>prioritized master list of all desired features and fixes</b>. The team pulls work from the top of this list each Sprint."
+  },
+  {
+    section: "Test I · SDLC & Methodologies",
+    q: "Why might a school project benefit from using Agile?",
+    options: [
+      "It eliminates the need for planning",
+      "It allows incremental delivery and adaptation to feedback",
+      "It requires no documentation at all",
+      "It guarantees an A grade"
+    ],
+    answer: 1,
+    explain: "Agile lets a school team <b>deliver work in increments and adapt to feedback</b> from teachers or classmates — useful when requirements are still unclear."
+  },
+  {
+    section: "Test I · SDLC & Methodologies",
+    q: "What does \"responding to change over following a plan\" mean in the Agile Manifesto?",
+    options: [
+      "Plans should never be made",
+      "Teams should welcome changing requirements even late in development",
+      "Changes should be avoided at all costs",
+      "Only managers can make changes"
+    ],
+    answer: 1,
+    explain: "It means teams should <b>welcome changing requirements</b>, even late in development, because change often leads to a better product for the customer. Planning is still done — it just isn't rigid."
+  },
+  {
+    section: "Test I · SDLC & Methodologies",
+    q: "A government agency has a fixed-scope payroll system with legally defined, unchanging requirements. Which methodology is best suited?",
+    options: ["Agile", "Waterfall", "Scrum", "DevOps"],
+    answer: 1,
+    explain: "<b>Waterfall</b> fits best here because the requirements are fixed and legally defined. When scope is stable and predictable, a sequential approach is efficient and easier to audit."
+  },
+  {
+    section: "Test I · SDLC & Methodologies",
+    q: "A startup building a food delivery app is unsure which features users will want most. Which methodology is best suited?",
+    options: ["Waterfall", "Agile", "Big Bang", "None of the above"],
+    answer: 1,
+    explain: "<b>Agile</b> fits because the requirements are uncertain. Short iterations let the startup release features, gather real user feedback, and adjust quickly."
+  },
+  {
+    section: "Test I · SDLC & Methodologies",
+    q: "A team builds a login feature, then a dashboard, then a report generator, with each piece fully usable when finished. This is an example of:",
+    options: ["Iterative development", "Incremental development", "Waterfall methodology", "Spiral methodology"],
+    answer: 1,
+    explain: "This is <b>incremental development</b> — the product is built and delivered piece by piece, with each added part fully working."
+  },
+  {
+    section: "Test I · SDLC & Methodologies",
+    q: "\"As a registrar, I want to search for a student by student number so that I can quickly find their records.\" This is an example of:",
+    options: ["A bug report", "A user story", "A test case", "A deployment log"],
+    answer: 1,
+    explain: "It follows the user-story template (As a… I want… so that…), so it is a <b>user story</b> describing a feature from the registrar's perspective."
+  },
+  {
+    section: "Test I · SDLC & Methodologies",
+    q: "Interviewing the registrar's office to discover that the system must store student records and generate grade reports is part of which SDLC phase?",
+    options: ["System Design", "Requirements Analysis", "Development", "Deployment"],
+    answer: 1,
+    explain: "Interviewing users to discover what the system must do is <b>Requirements Analysis</b> — the discovery phase before any design work."
+  },
+  {
+    section: "Test I · SDLC & Methodologies",
+    q: "A team begins writing code immediately without gathering requirements or designing the system. Which SDLC phases did they skip?",
+    options: [
+      "Testing and Deployment",
+      "Requirements Analysis and System Design",
+      "Maintenance and Testing",
+      "Deployment and Maintenance"
+    ],
+    answer: 1,
+    explain: "They skipped <b>Requirements Analysis and System Design</b> by jumping straight into coding — which usually leads to building the wrong thing."
+  },
+  {
+    section: "Test I · SDLC & Methodologies",
+    q: "Why does skipping Requirements Analysis often lead to project failure?",
+    options: [
+      "Because coding is impossible without it",
+      "Because the team may build the wrong features, wasting effort and failing to meet client needs",
+      "Because testing cannot be performed without it",
+      "Because it is required by law"
+    ],
+    answer: 1,
+    explain: "Without requirements, the team may <b>build the wrong features</b>. That wastes time and money and leaves the client's real needs unmet — a classic cause of project failure."
+  },
+  {
+    section: "Test I · SDLC & Methodologies",
+    q: "Which statement best analyzes the trade-off between Waterfall and Agile?",
+    options: [
+      "Waterfall is always better because it is more structured",
+      "Agile is always better because it is more flexible",
+      "Waterfall suits stable requirements; Agile suits evolving or unclear requirements",
+      "Both methodologies produce identical results"
+    ],
+    answer: 2,
+    explain: "Neither is universally better. <b>Waterfall suits stable, well-known requirements; Agile suits evolving or unclear ones.</b> The right choice depends on the project."
+  },
+  {
+    section: "Test I · SDLC & Methodologies",
+    q: "How do Agile practices relate to the traditional SDLC phases?",
+    options: [
+      "Agile eliminates the need for SDLC phases",
+      "Agile applies SDLC phases iteratively within short sprints rather than once sequentially",
+      "Agile and SDLC are completely unrelated",
+      "Agile only uses the Testing phase"
+    ],
+    answer: 1,
+    explain: "Agile doesn't remove the phases — it <b>repeats them in short sprints</b>. A sprint still involves analysis, design, coding, and testing, just in miniature and repeated."
+  },
+  {
+    section: "Test I · SDLC & Methodologies",
+    q: "Why are documentation and project planning essential to software projects?",
+    options: [
+      "They make the code run faster",
+      "They provide shared checkpoints, reduce risk, and help estimate cost and time",
+      "They replace the need for testing",
+      "They are only required for government projects"
+    ],
+    answer: 1,
+    explain: "Documentation and planning give the team <b>shared checkpoints, lower risk, and realistic cost and time estimates</b>. They keep everyone aligned on the same goal."
+  },
+
+  /* ---------------- TEST II : AGILE, DEVOPS, CI/CD (31–45) ---------------- */
+  {
+    section: "Test II · Agile, DevOps & CI/CD",
+    q: "Who is responsible for prioritizing the Product Backlog?",
+    options: ["Scrum Master", "Product Owner", "Development Team", "Client only"],
+    answer: 1,
+    explain: "The <b>Product Owner</b> owns and prioritizes the Product Backlog, making sure the team works on the items that deliver the most value."
+  },
+  {
+    section: "Test II · Agile, DevOps & CI/CD",
+    q: "What does CI stand for?",
+    options: ["Code Inspection", "Continuous Integration", "Continuous Installation", "Code Integration Interface"],
+    answer: 1,
+    explain: "CI means <b>Continuous Integration</b> — developers merge their code into a shared repository frequently, and each merge triggers an automated build and test."
+  },
+  {
+    section: "Test II · Agile, DevOps & CI/CD",
+    q: "What is the main difference between Git and GitHub?",
+    options: [
+      "They are the same thing",
+      "Git is a hosting website; GitHub is version control software",
+      "Git is version control software; GitHub is a cloud hosting platform for Git repositories",
+      "GitHub replaces the need for Git"
+    ],
+    answer: 2,
+    explain: "<b>Git</b> is the version control tool that runs on your computer. <b>GitHub</b> is an online platform that hosts Git repositories and adds collaboration features."
+  },
+  {
+    section: "Test II · Agile, DevOps & CI/CD",
+    q: "What is the purpose of the Daily Scrum?",
+    options: [
+      "To assign blame for missed deadlines",
+      "To synchronize the team on progress and blockers",
+      "To finalize the Product Backlog",
+      "To deploy the application"
+    ],
+    answer: 1,
+    explain: "The Daily Scrum is a short stand-up meeting to <b>synchronize the team on progress and blockers</b> — not a status report or a blame session."
+  },
+  {
+    section: "Test II · Agile, DevOps & CI/CD",
+    q: "What is the purpose of the Sprint Retrospective?",
+    options: [
+      "To demo the product to stakeholders",
+      "To reflect on the team's process and identify improvements",
+      "To plan the next Sprint's backlog items",
+      "To fix production bugs"
+    ],
+    answer: 1,
+    explain: "The Retrospective is the team's own meeting to <b>reflect on how they worked and identify improvements</b> for the next Sprint."
+  },
+  {
+    section: "Test II · Agile, DevOps & CI/CD",
+    q: "Why is a .gitignore file important for a project's security and cleanliness?",
+    options: [
+      "It deletes files permanently",
+      "It lists files/folders Git should not track, preventing sensitive data from being committed",
+      "It creates a new branch",
+      "It merges two branches"
+    ],
+    answer: 1,
+    explain: ".gitignore tells Git which files to <b>skip tracking</b> — like passwords, API keys, and build folders — keeping the repository clean and secrets out of the code."
+  },
+  {
+    section: "Test II · Agile, DevOps & CI/CD",
+    q: "What is the key difference between Continuous Delivery and Continuous Deployment?",
+    options: [
+      "There is no difference",
+      "Delivery requires human approval before release; Deployment releases automatically",
+      "Deployment is only for mobile apps",
+      "Delivery only applies to databases"
+    ],
+    answer: 1,
+    explain: "In <b>Continuous Delivery</b>, the code is always ready to release but a human approves the final push. In <b>Continuous Deployment</b>, that release happens automatically once tests pass."
+  },
+  {
+    section: "Test II · Agile, DevOps & CI/CD",
+    q: "Which Git command downloads a full copy of a remote repository?",
+    options: ["git push", "git clone", "git merge", "git commit"],
+    answer: 1,
+    explain: "<b>git clone</b> downloads a complete copy of a remote repository, including its history, to your local machine."
+  },
+  {
+    section: "Test II · Agile, DevOps & CI/CD",
+    q: "Who removes obstacles blocking the Development Team?",
+    options: ["Product Owner", "Client", "Scrum Master", "End user"],
+    answer: 2,
+    explain: "The <b>Scrum Master</b> is the servant-leader who removes impediments so the Development Team can stay productive."
+  },
+  {
+    section: "Test II · Agile, DevOps & CI/CD",
+    q: "What happens in a CI pipeline if an automated test fails?",
+    options: [
+      "The code is deployed anyway",
+      "The pipeline stops and alerts the team",
+      "The test is automatically deleted",
+      "Nothing happens"
+    ],
+    answer: 1,
+    explain: "The pipeline <b>stops and alerts the team</b>. That fast feedback is the whole point of CI — catching problems before they reach production."
+  },
+  {
+    section: "Test II · Agile, DevOps & CI/CD",
+    q: "Which Git command creates and switches to a new branch?",
+    options: [
+      "git checkout -b feature/login",
+      "git branch feature/login",
+      "git merge feature/login",
+      "git push origin feature/login"
+    ],
+    answer: 0,
+    explain: "<b>git checkout -b feature/login</b> creates the branch and switches to it in one step. (git branch alone only creates it; the newer form is git switch -c.)"
+  },
+  {
+    section: "Test II · Agile, DevOps & CI/CD",
+    q: "How does DevOps improve collaboration between development and operations teams?",
+    options: [
+      "By keeping teams in separate silos",
+      "Through automation, shared responsibility, and continuous feedback",
+      "By eliminating the need for operations staff",
+      "By slowing down deployment"
+    ],
+    answer: 1,
+    explain: "DevOps breaks down silos using <b>automation, shared responsibility, and continuous feedback</b>, so development and operations work toward the same goals."
+  },
+  {
+    section: "Test II · Agile, DevOps & CI/CD",
+    q: "Why is branching important in team collaboration?",
+    options: [
+      "It allows developers to work on features in isolation without affecting the main codebase",
+      "It slows down development",
+      "It prevents code from being tested",
+      "It eliminates the need for commits"
+    ],
+    answer: 0,
+    explain: "Branches let each developer <b>work on a feature in isolation</b>. The main branch stays stable until the work is reviewed and merged."
+  },
+  {
+    section: "Test II · Agile, DevOps & CI/CD",
+    q: "Analyze the Scrum cycle. Which sequence is correct?",
+    options: [
+      "Product Backlog → Sprint Planning → Sprint (with Daily Scrums) → Sprint Review → Sprint Retrospective",
+      "Sprint Planning → Product Backlog → Sprint Review → Sprint Retrospective → Sprint",
+      "Sprint Review → Sprint Planning → Daily Scrum → Sprint Retrospective",
+      "Daily Scrum → Sprint Review → Sprint Planning → Sprint Retrospective"
+    ],
+    answer: 0,
+    explain: "The correct Scrum flow is: <b>Product Backlog → Sprint Planning → Sprint (with Daily Scrums) → Sprint Review → Sprint Retrospective</b>, then the cycle repeats."
+  },
+  {
+    section: "Test II · Agile, DevOps & CI/CD",
+    q: "A team's CI/CD pipeline builds the application but runs no automated tests. Evaluate this situation.",
+    options: [
+      "This is a complete CI/CD pipeline",
+      "This is only CI; CD is missing",
+      "This builds but does not truly integrate or verify correctness; automated testing is essential for CI",
+      "Automated tests are optional and not needed"
+    ],
+    answer: 2,
+    explain: "A pipeline that only builds <b>doesn't truly integrate or verify correctness</b>. Automated testing is the heart of CI — without it, broken code can slip through undetected."
+  },
+
+  /* ---------------- TEST III : WEB ARCHITECTURE & REACT (46–50) ---------------- */
+  {
+    section: "Test III · Web Architecture & React",
+    q: "What does API stand for?",
+    options: [
+      "Application Programming Interface",
+      "Applied Programming Integration",
+      "Automated Process Interface",
+      "Application Process Integration"
+    ],
+    answer: 0,
+    explain: "API stands for <b>Application Programming Interface</b> — a defined set of rules that lets one program request data or services from another."
+  },
+  {
+    section: "Test III · Web Architecture & React",
+    q: "What is JSON and why is it commonly used in APIs?",
+    options: [
+      "A programming language for building APIs",
+      "A lightweight, human-readable text format for exchanging structured data",
+      "A database management system",
+      "A type of web server"
+    ],
+    answer: 1,
+    explain: "<b>JSON</b> is a lightweight, human-readable text format for structured data. It is popular because it is easy to read, compact, and supported by nearly every language."
+  },
+  {
+    section: "Test III · Web Architecture & React",
+    q: "Which HTTP method is used to retrieve data?",
+    options: ["POST", "GET", "DELETE", "PUT"],
+    answer: 1,
+    explain: "<b>GET</b> is used to retrieve data from a server. POST creates, PUT updates, and DELETE removes data."
+  },
+  {
+    section: "Test III · Web Architecture & React",
+    q: "Which part of a web application runs in the user's browser?",
+    options: ["Back-end", "Database", "Front-end", "Server"],
+    answer: 2,
+    explain: "The <b>front-end</b> (HTML, CSS, JavaScript, React) runs in the user's browser. The back-end, server, and database run on the server side."
+  },
+  {
+    section: "Test III · Web Architecture & React",
+    q: "In React, what is used to pass data from a parent component to a child component?",
+    options: ["State", "Props", "Hooks", "Events"],
+    answer: 1,
+    explain: "<b>Props</b> (properties) carry data from a parent component down to a child component. Props are read-only — the child cannot modify them."
+  }
+];
+
+/* =========================================================
+   STATE
+   ========================================================= */
+let current = 0;
+let selected = null;
+let answered = false;
+let score = 0;
+let studentName = "";
+const missed = [];
+const LETTERS = ["A", "B", "C", "D"];
+
+/* =========================================================
+   ELEMENTS
+   ========================================================= */
+const sectionTag   = document.getElementById("sectionTag");
+const counter      = document.getElementById("counter");
+const scoreChip    = document.getElementById("scoreChip");
+const progressBar  = document.getElementById("progressBar");
+const questionText = document.getElementById("questionText");
+const optionsBox   = document.getElementById("options");
+const feedbackBox  = document.getElementById("feedback");
+const submitBtn    = document.getElementById("submitBtn");
+const nextBtn      = document.getElementById("nextBtn");
+const quizCard     = document.getElementById("quizCard");
+const resultsCard  = document.getElementById("resultsCard");
+const finalScore   = document.getElementById("finalScore");
+const finalPercent = document.getElementById("finalPercent");
+const finalRemark  = document.getElementById("finalRemark");
+const reviewList   = document.getElementById("reviewList");
+const restartBtn   = document.getElementById("restartBtn");
+const resultName   = document.getElementById("resultName");
+const studentBanner= document.getElementById("studentBanner");
+const studentNameDisplay = document.getElementById("studentNameDisplay");
+
+const welcomeModal = document.getElementById("welcomeModal");
+const nameInput    = document.getElementById("studentNameInput");
+const nameError    = document.getElementById("nameError");
+const startExamBtn = document.getElementById("startExamBtn");
+
+const downloadBtn  = document.getElementById("downloadBtn");
+const copyBtn      = document.getElementById("copyBtn");
+const toastEl      = document.getElementById("toast");
+
+/* =========================================================
+   LOGOS  (preloaded so they can be drawn on the result card)
+   ========================================================= */
+const logoLeftImgEl  = document.getElementById("logoLeftImg");
+const logoRightImgEl = document.getElementById("logoRightImg");
+
+let logoLeftReady  = null;
+let logoRightReady = null;
+
+function preloadLogo(imgEl, onDone) {
+  if (!imgEl || !imgEl.src) { onDone(null); return; }
+  const im = new Image();
+  im.onload  = () => onDone(im);
+  im.onerror = () => onDone(null);
+  im.src = imgEl.src;
+}
+
+preloadLogo(logoLeftImgEl,  img => { logoLeftReady  = img; });
+preloadLogo(logoRightImgEl, img => { logoRightReady = img; });
+
+/* mirror the two header logos into the welcome modal */
+(function mirrorLogosIntoModal() {
+  const mLeft  = document.getElementById("modalLogoLeftImg");
+  const mRight = document.getElementById("modalLogoRightImg");
+  if (mLeft  && logoLeftImgEl.src)  mLeft.src  = logoLeftImgEl.src;
+  if (mRight && logoRightImgEl.src) mRight.src = logoRightImgEl.src;
+})();
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+let toastTimer = null;
+function showToast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2200);
+}
+
+/* =========================================================
+   START EXAM
+   ========================================================= */
+function startExam() {
+  const raw = nameInput.value.trim().replace(/\s+/g, " ");
+
+  if (!raw) {
+    nameInput.classList.add("error");
+    nameError.classList.add("show");
+    nameInput.focus();
+    return;
+  }
+
+  studentName = raw;
+  nameInput.classList.remove("error");
+  nameError.classList.remove("show");
+
+  studentNameDisplay.textContent = studentName;
+  studentBanner.classList.remove("hidden");
+
+  welcomeModal.classList.add("hidden");
+
+  current = 0;
+  selected = null;
+  answered = false;
+  score = 0;
+  missed.length = 0;
+
+  quizCard.classList.remove("hidden");
+  resultsCard.classList.add("hidden");
+  renderQuestion();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+startExamBtn.addEventListener("click", startExam);
+nameInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") { e.preventDefault(); startExam(); }
+});
+nameInput.addEventListener("input", () => {
+  if (nameInput.value.trim()) {
+    nameInput.classList.remove("error");
+    nameError.classList.remove("show");
+  }
+});
+
+/* =========================================================
+   RENDER QUESTION
+   ========================================================= */
+function renderQuestion() {
+  const item = QUESTIONS[current];
+  selected = null;
+  answered = false;
+
+  sectionTag.textContent = item.section;
+  counter.textContent = `Question ${current + 1} of ${QUESTIONS.length}`;
+  scoreChip.textContent = `Score: ${score}`;
+  progressBar.style.width = `${(current / QUESTIONS.length) * 100}%`;
+
+  questionText.textContent = `${current + 1}. ${item.q}`;
+
+  optionsBox.innerHTML = "";
+  item.options.forEach((text, i) => {
+    const btn = document.createElement("button");
+    btn.className = "option";
+    btn.type = "button";
+    btn.innerHTML = `<span class="letter">${LETTERS[i]}</span><span class="text">${text}</span>`;
+    btn.addEventListener("click", () => chooseOption(i));
+    optionsBox.appendChild(btn);
+  });
+
+  feedbackBox.className = "feedback";
+  feedbackBox.innerHTML = "";
+  submitBtn.classList.remove("hidden");
+  submitBtn.disabled = false;
+  nextBtn.classList.add("hidden");
+  nextBtn.textContent = (current === QUESTIONS.length - 1)
+    ? "See Results →"
+    : "Next Question →";
+}
+
+/* =========================================================
+   CHOOSE OPTION
+   ========================================================= */
+function chooseOption(i) {
+  if (answered) return;
+  selected = i;
+  [...optionsBox.children].forEach((btn, idx) => {
+    btn.classList.toggle("selected", idx === i);
+  });
+}
+
+/* =========================================================
+   SUBMIT ANSWER
+   ========================================================= */
+function submitAnswer() {
+  if (answered) return;
+
+  if (selected === null) {
+    feedbackBox.className = "feedback show bad";
+    feedbackBox.innerHTML =
+      `<span class="verdict">⚠ No answer selected</span>
+       <span class="explain">Please choose one of the options (A–D) before submitting.</span>`;
+    return;
+  }
+
+  answered = true;
+  const item = QUESTIONS[current];
+  const isCorrect = selected === item.answer;
+
+  if (isCorrect) score++;
+
+  [...optionsBox.children].forEach((btn, idx) => {
+    btn.disabled = true;
+    btn.classList.remove("selected");
+    if (idx === item.answer) btn.classList.add("correct");
+    if (idx === selected && !isCorrect) btn.classList.add("wrong");
+  });
+
+  if (isCorrect) {
+    feedbackBox.className = "feedback show good";
+    feedbackBox.innerHTML =
+      `<span class="verdict">✅ Correct!</span>
+       <span class="explain">${item.explain}</span>`;
+  } else {
+    missed.push({
+      number: current + 1,
+      question: item.q,
+      correctText: `${LETTERS[item.answer]}. ${item.options[item.answer]}`
+    });
+    feedbackBox.className = "feedback show bad";
+    feedbackBox.innerHTML =
+      `<span class="verdict">❌ Incorrect — the correct answer is ${LETTERS[item.answer]}. ${item.options[item.answer]}</span>
+       <span class="explain">${item.explain}</span>`;
+  }
+
+  scoreChip.textContent = `Score: ${score}`;
+  progressBar.style.width = `${((current + 1) / QUESTIONS.length) * 100}%`;
+  submitBtn.classList.add("hidden");
+  nextBtn.classList.remove("hidden");
+  nextBtn.focus({ preventScroll: true });
+}
+
+/* =========================================================
+   NEXT QUESTION
+   ========================================================= */
+function nextQuestion() {
+  if (!answered) return;
+  current++;
+  if (current < QUESTIONS.length) {
+    renderQuestion();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  } else {
+    showResults();
+  }
+}
+
+/* =========================================================
+   RESULTS
+   ========================================================= */
+function showResults() {
+  quizCard.classList.add("hidden");
+  resultsCard.classList.remove("hidden");
+
+  const total = QUESTIONS.length;
+  const pct = Math.round((score / total) * 100);
+
+  resultName.textContent = "👤 " + studentName;
+  finalScore.innerHTML = `${score}<small> / ${total}</small>`;
+  finalPercent.textContent = `${pct}%`;
+
+  let remark = "";
+  if (pct === 100)      remark = "Perfect score! You have mastered the SDLC, Agile, DevOps, and web fundamentals covered in this reviewer. 🏆";
+  else if (pct >= 90)   remark = "Outstanding! You have a very strong grasp of the topics. Review the few missed items below and you're fully set. 🌟";
+  else if (pct >= 80)   remark = "Great job! Solid understanding overall. Focus on the missed items below to push your score even higher. 👍";
+  else if (pct >= 70)   remark = "Good effort! You understand the basics, but a few concepts need reinforcement. Review the items below carefully. 📘";
+  else if (pct >= 60)   remark = "You passed, but there's clear room to grow. Re-read the explanations for the missed items and try again. 💪";
+  else                  remark = "Keep going! Review the explanations below — they cover the exact concepts you need. Then restart and try again. 📚";
+
+  finalRemark.textContent = remark;
+
+  reviewList.innerHTML = "";
+  if (missed.length === 0) {
+    const p = document.createElement("p");
+    p.className = "all-good";
+    p.textContent = "🎉 You answered every single question correctly!";
+    reviewList.appendChild(p);
+  } else {
+    const h = document.createElement("h3");
+    h.textContent = `Items to Review (${missed.length})`;
+    reviewList.appendChild(h);
+
+    missed.forEach(m => {
+      const div = document.createElement("div");
+      div.className = "review-item";
+      div.innerHTML =
+        `<div class="q">${m.number}. ${m.question}</div>
+         <div class="a">Correct answer: <b>${m.correctText}</b></div>`;
+      reviewList.appendChild(div);
+    });
+  }
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* =========================================================
+   RESTART
+   ========================================================= */
+function restart() {
+  resultsCard.classList.add("hidden");
+  quizCard.classList.remove("hidden");
+
+  current = 0;
+  selected = null;
+  answered = false;
+  score = 0;
+  missed.length = 0;
+
+  renderQuestion();
+
+  nameInput.value = studentName;
+  nameError.classList.remove("show");
+  nameInput.classList.remove("error");
+  welcomeModal.classList.remove("hidden");
+  setTimeout(() => nameInput.focus(), 100);
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* =========================================================
+   RESULT IMAGE (CANVAS) GENERATION
+   ========================================================= */
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function wrapCentered(ctx, text, cx, y, maxW, lineH) {
+  const words = String(text).split(" ");
+  const lines = [];
+  let line = "";
+  for (const w of words) {
+    const test = line ? line + " " + w : w;
+    if (ctx.measureText(test).width > maxW && line) {
+      lines.push(line);
+      line = w;
+    } else {
+      line = test;
+    }
+  }
+  if (line) lines.push(line);
+  lines.forEach((l, i) => ctx.fillText(l, cx, y + i * lineH));
+  return y + lines.length * lineH;
+}
+
+/* draw one circular logo in the header band */
+function drawLogoCircle(ctx, img, cx, cy, r) {
+  if (!img) return;
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.closePath();
+  ctx.fillStyle = "#ffffff";
+  ctx.fill();
+  ctx.clip();
+  ctx.drawImage(img, cx - r, cy - r, r * 2, r * 2);
+  ctx.restore();
+
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.strokeStyle = "rgba(255,255,255,0.95)";
+  ctx.lineWidth = 4;
+  ctx.stroke();
+}
+
+function drawResult(ctx, W) {
+  const PAD = 54;
+  const innerW = W - PAD * 2;
+  const CX = W / 2;
+  const sans = '"Segoe UI", system-ui, Arial, sans-serif';
+  const total = QUESTIONS.length;
+  const pct = Math.round((score / total) * 100);
+
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, W, 5000);
+
+  /* ---- header band ---- */
+  const headerH = 178;
+  const grad = ctx.createLinearGradient(0, 0, W, headerH);
+  grad.addColorStop(0, "#4338ca");
+  grad.addColorStop(1, "#7c3aed");
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, headerH);
+
+  /* ---- the 2 logos on the result card ---- */
+  const logoSide = 42;                 // radius
+  const logoY    = headerH / 2;
+  drawLogoCircle(ctx, logoLeftReady,  70,      logoY, logoSide);
+  drawLogoCircle(ctx, logoRightReady, W - 70,  logoY, logoSide);
+
+  ctx.textAlign = "center";
+
+  ctx.fillStyle = "#ffffff";
+  ctx.font = `800 42px ${sans}`;
+  ctx.fillText("MOCK EXAM RESULT", CX, 72);
+
+  ctx.fillStyle = "rgba(255,255,255,0.92)";
+  ctx.font = `600 20px ${sans}`;
+  ctx.fillText("SDLC, Agile, DevOps & Modern Web Fundamentals", CX, 108);
+
+  const now = new Date();
+  const dateStr = now.toLocaleDateString(undefined, {
+    year: "numeric", month: "long", day: "numeric"
+  }) + " · " + now.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+
+  ctx.fillStyle = "rgba(255,255,255,0.78)";
+  ctx.font = `500 16px ${sans}`;
+  ctx.fillText(dateStr, CX, 142);
+
+  let y = headerH + 66;
+
+  /* ---- student ---- */
+  ctx.fillStyle = "#94a3b8";
+  ctx.font = `800 14px ${sans}`;
+  ctx.fillText("S T U D E N T", CX, y);
+  y += 48;
+
+  ctx.fillStyle = "#0f172a";
+  let nameFont = 40;
+  ctx.font = `800 ${nameFont}px ${sans}`;
+  while (ctx.measureText(studentName).width > innerW && nameFont > 20) {
+    nameFont -= 2;
+    ctx.font = `800 ${nameFont}px ${sans}`;
+  }
+  ctx.fillText(studentName, CX, y);
+  y += 36;
+
+  ctx.fillStyle = "#64748b";
+  ctx.font = `600 18px ${sans}`;
+  ctx.fillText("Instructor: Sir Lee-Mher", CX, y);
+  y += 56;
+
+  /* ---- score box ---- */
+  const boxW = 460;
+  const boxH = 190;
+  const boxX = CX - boxW / 2;
+  const boxY = y;
+
+  roundRect(ctx, boxX, boxY, boxW, boxH, 26);
+  ctx.fillStyle = "#eef2ff";
+  ctx.fill();
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = "#c7d2fe";
+  ctx.stroke();
+
+  ctx.fillStyle = "#4338ca";
+  ctx.font = `800 78px ${sans}`;
+  ctx.fillText(`${score} / ${total}`, CX, boxY + 102);
+
+  ctx.fillStyle = "#6366f1";
+  ctx.font = `800 32px ${sans}`;
+  ctx.fillText(`${pct}%`, CX, boxY + 152);
+
+  y = boxY + boxH + 56;
+
+  /* ---- remark ---- */
+  let remark = "";
+  if (pct === 100)    remark = "Perfect score! You have mastered the topics in this reviewer.";
+  else if (pct >= 90) remark = "Outstanding! You have a very strong grasp of the topics.";
+  else if (pct >= 80) remark = "Great job! Solid understanding overall.";
+  else if (pct >= 70) remark = "Good effort! A few concepts need reinforcement.";
+  else if (pct >= 60) remark = "You passed, but there is clear room to grow.";
+  else                remark = "Keep going! Review the explanations and try again.";
+
+  ctx.fillStyle = "#334155";
+  ctx.font = `500 21px ${sans}`;
+  y = wrapCentered(ctx, remark, CX, y, innerW, 32) + 44;
+
+  /* ---- items to review ---- */
+  if (missed.length === 0) {
+    ctx.fillStyle = "#16a34a";
+    ctx.font = `800 24px ${sans}`;
+    ctx.fillText("Perfect score - no items to review!", CX, y);
+    y += 54;
+  } else {
+    ctx.fillStyle = "#0f172a";
+    ctx.font = `800 21px ${sans}`;
+    ctx.fillText(`ITEMS TO REVIEW (${missed.length})`, CX, y);
+    y += 42;
+
+    const listText = missed.map(m => m.number).join(",  ");
+    ctx.fillStyle = "#475569";
+    ctx.font = `700 20px ${sans}`;
+    y = wrapCentered(ctx, listText, CX, y, innerW, 32) + 46;
+  }
+
+  /* ---- footer ---- */
+  ctx.strokeStyle = "#e2e8f0";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(PAD, y);
+  ctx.lineTo(W - PAD, y);
+  ctx.stroke();
+  y += 48;
+
+  ctx.fillStyle = "#4f46e5";
+  ctx.font = `800 23px ${sans}`;
+  ctx.fillText("Send this result to Sir Lee-Mher on Messenger", CX, y);
+  y += 36;
+
+  ctx.fillStyle = "#94a3b8";
+  ctx.font = `500 17px ${sans}`;
+  y = wrapCentered(
+    ctx,
+    "Take a screenshot of this card or attach the downloaded PNG file. Keep it as your reviewer for the upcoming midterm exam.",
+    CX, y, innerW, 27
+  );
+
+  return y + 60;
+}
+
+function buildResultCanvas() {
+  const W = 900;
+  const tmp = document.createElement("canvas");
+  tmp.width = W;
+  tmp.height = 5000;
+  const tctx = tmp.getContext("2d");
+  const endY = drawResult(tctx, W);
+
+  const H = Math.ceil(endY);
+  const real = document.createElement("canvas");
+  real.width = W;
+  real.height = H;
+  const rctx = real.getContext("2d");
+  drawResult(rctx, W);
+  return real;
+}
+
+/* =========================================================
+   DOWNLOAD / COPY
+   ========================================================= */
+function downloadResult() {
+  try {
+    const canvas = buildResultCanvas();
+    const safeName = studentName.replace(/[^a-z0-9]+/gi, "_").replace(/^_+|_+$/g, "");
+    const link = document.createElement("a");
+    link.download = `MockExam_Result_${safeName || "Student"}.png`;
+    link.href = canvas.toDataURL("image/png");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast("Result downloaded! Send it to Sir Lee-Mher on Messenger.");
+  } catch (err) {
+    showToast("Download failed — please take a screenshot instead.");
+  }
+}
+
+function buildTextSummary() {
+  const total = QUESTIONS.length;
+  const pct = Math.round((score / total) * 100);
+  const now = new Date();
+  const dateStr = now.toLocaleDateString() + " " + now.toLocaleTimeString();
+
+  let txt = "";
+  txt += "MOCK EXAM RESULT\n";
+  txt += "============================\n";
+  txt += `Student: ${studentName}\n`;
+  txt += `Score: ${score} / ${total} (${pct}%)\n`;
+  txt += `Instructor: Sir Lee-Mher\n`;
+  txt += `Date: ${dateStr}\n`;
+  txt += "============================\n";
+  if (missed.length === 0) {
+    txt += "Perfect score! No items to review.\n";
+  } else {
+    txt += `Items to review: ${missed.map(m => m.number).join(", ")}\n`;
+  }
+  txt += "\nSent via Messenger to Sir Lee-Mher.";
+  return txt;
+}
+
+function copySummary() {
+  const text = buildTextSummary();
+  const done = () => showToast("Summary copied! Paste it in Messenger.");
+  const fail = () => showToast("Copy failed — please take a screenshot instead.");
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(() => {
+      legacyCopy(text) ? done() : fail();
+    });
+  } else {
+    legacyCopy(text) ? done() : fail();
+  }
+}
+
+function legacyCopy(text) {
+  try {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand("copy");
+    document.body.removeChild(ta);
+    return ok;
+  } catch (e) {
+    return false;
+  }
+}
+
+/* =========================================================
+   EVENT LISTENERS
+   ========================================================= */
+submitBtn.addEventListener("click", submitAnswer);
+nextBtn.addEventListener("click", nextQuestion);
+restartBtn.addEventListener("click", restart);
+downloadBtn.addEventListener("click", downloadResult);
+copyBtn.addEventListener("click", copySummary);
+
+document.addEventListener("keydown", (e) => {
+  if (!welcomeModal.classList.contains("hidden")) return;
+  if (e.target && e.target.tagName === "INPUT") return;
+  if (!resultsCard.classList.contains("hidden")) return;
+
+  const key = e.key.toUpperCase();
+  const letterIdx = LETTERS.indexOf(key);
+  const numberIdx = ["1", "2", "3", "4"].indexOf(key);
+  const idx = letterIdx !== -1 ? letterIdx : numberIdx;
+
+  if (idx !== -1 && idx < QUESTIONS[current].options.length) {
+    chooseOption(idx);
+    return;
+  }
+
+  if (e.key === "Enter") {
+    e.preventDefault();
+    if (!answered) submitAnswer();
+    else nextQuestion();
+  }
+});
+
+/* =========================================================
+   INIT
+   ========================================================= */
+renderQuestion();
+setTimeout(() => nameInput.focus(), 300);
+</script>
+</body>
+</html>
